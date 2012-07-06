@@ -210,7 +210,7 @@ class DjangoProbeSuiteRunner(object):
 				failfast=self.failfast, **kwargs).run(suite)
 
 	def suite_result(self, suite, result, **kwargs):
-		return len(result.failures) + len(result.errors)
+		return (suite, result.failures, result.errors)
 
 	def run_probes(self, probe_labels, extra_probes=None, **kwargs):
 		"""

@@ -23,7 +23,7 @@ class Command(BaseCommand):
 		ProbeRunner = get_probe_runner(settings)
 		
 		probe_runner = ProbeRunner(verbosity=verbosity, interactive=interactive, failfast=failfast)
-		failures = probe_runner.run_probes(probe_labels)
-		
-		if failures:
+		(suite, failures, errors) = probe_runner.run_probes(probe_labels)
+
+		if failures or errors:
 			sys.exit(bool(failures))
