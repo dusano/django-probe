@@ -17,22 +17,25 @@ PROBE_MODULE = 'probes'
 
 class DjangoProbeRunner(unittest.TextTestRunner):
 
-	def __init__(self, verbosity=0, failfast=False, **kwargs):
+	def __init__(self, verbosity=0, interactive=True, failfast=False, **kwargs):
 		super(DjangoProbeRunner, self).__init__(verbosity=verbosity, **kwargs)
+		self.interactive = interactive
 		self.failfast = failfast
 		self._keyboard_interrupt_intercepted = False
 
 	def run(self, *args, **kwargs):
 		"""
-		Runs the probe suite after registering a custom signal handler
+		Runs the probe suite after registering a custom signal handler (if interactive)
 		that triggers a graceful exit when Ctrl-C is pressed.
 		"""
-		self._default_keyboard_interrupt_handler = signal.signal(signal.SIGINT,
-			self._keyboard_interrupt_handler)
+		if self.interactive:
+			self._default_keyboard_interrupt_handler = signal.signal(signal.SIGINT,
+				self._keyboard_interrupt_handler)
 		try:
 			result = super(DjangoProbeRunner, self).run(*args, **kwargs)
 		finally:
-			signal.signal(signal.SIGINT, self._default_keyboard_interrupt_handler)
+			if self.interactive:
+				signal.signal(signal.SIGINT, self._default_keyboard_interrupt_handler)
 		return result
 
 	def _keyboard_interrupt_handler(self, signal_number, stack_frame):
@@ -177,8 +180,9 @@ def reorder_suite(suite, classes):
 	return bins[0]
 
 class DjangoProbeSuiteRunner(object):
-	def __init__(self, verbosity=1, failfast=True, **kwargs):
+	def __init__(self, verbosity=1, interactive=True, failfast=True, **kwargs):
 		self.verbosity = verbosity
+		self.interactive = interactive
 		self.failfast = failfast
 
 	def build_suite(self, probe_labels, extra_probes=None, **kwargs):
@@ -202,7 +206,7 @@ class DjangoProbeSuiteRunner(object):
 		return reorder_suite(suite, (unittest.TestCase,))
 
 	def run_suite(self, suite, **kwargs):
-		return DjangoProbeRunner(verbosity=self.verbosity, failfast=self.failfast).run(suite)
+		return DjangoProbeRunner(verbosity=self.verbosity, interactive=self.interactive, failfast=self.failfast).run(suite)
 
 	def suite_result(self, suite, result, **kwargs):
 		return len(result.failures) + len(result.errors)
