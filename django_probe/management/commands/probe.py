@@ -18,11 +18,10 @@ class Command(BaseCommand):
 		from django_probe.utils import get_probe_runner
 		
 		verbosity = int(options.get('verbosity', 1))
-		interactive = options.get('interactive', True)
 		failfast = options.get('failfast', False)
 		ProbeRunner = get_probe_runner(settings)
 		
-		probe_runner = ProbeRunner(verbosity=verbosity, interactive=interactive, failfast=failfast)
+		probe_runner = ProbeRunner(verbosity=verbosity, failfast=failfast)
 		failures = probe_runner.run_probes(probe_labels)
 		
 		if failures:

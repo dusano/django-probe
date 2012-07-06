@@ -177,16 +177,14 @@ def reorder_suite(suite, classes):
 	return bins[0]
 
 class DjangoProbeSuiteRunner(object):
-	def __init__(self, verbosity=1, interactive=True, failfast=True, **kwargs):
+	def __init__(self, verbosity=1, failfast=True, **kwargs):
 		self.verbosity = verbosity
-		self.interactive = interactive
 		self.failfast = failfast
 
 	def build_suite(self, probe_labels, extra_probes=None, **kwargs):
 		suite = unittest.TestSuite()
 
 		if probe_labels:
-			print "build_suite.probe_labels"
 			for label in probe_labels:
 				if '.' in label:
 					suite.addTest(build_probe(label))
@@ -194,7 +192,6 @@ class DjangoProbeSuiteRunner(object):
 					app = get_app(label)
 					suite.addTest(build_suite(app))
 		else:
-			print "build_suite.all"
 			for app in get_apps():
 				suite.addTest(build_suite(app))
 
