@@ -206,7 +206,8 @@ class DjangoProbeSuiteRunner(object):
 		return reorder_suite(suite, (unittest.TestCase,))
 
 	def run_suite(self, suite, **kwargs):
-		return DjangoProbeRunner(verbosity=self.verbosity, interactive=self.interactive, failfast=self.failfast).run(suite)
+		return DjangoProbeRunner(verbosity=self.verbosity, interactive=self.interactive,
+				failfast=self.failfast, **kwargs).run(suite)
 
 	def suite_result(self, suite, result, **kwargs):
 		return len(result.failures) + len(result.errors)
@@ -231,5 +232,5 @@ class DjangoProbeSuiteRunner(object):
 		Returns the number of probes that failed.
 		"""
 		suite = self.build_suite(probe_labels, extra_probes)
-		result = self.run_suite(suite)
+		result = self.run_suite(suite, **kwargs)
 		return self.suite_result(suite, result)
