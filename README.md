@@ -1,4 +1,4 @@
 django-probe
 ============
 
-HackDay project
+HackDay project (2012-07-06)
