@@ -5,5 +5,5 @@ setup(name='django_probe',
       description='Django Probe',
       author='Dusan Omercevic',
       packages=['django_probe'],
-      package_dir = {'django_probe':'.'},
+      package_dir = {'django_probe':'django_probe'},
      )
